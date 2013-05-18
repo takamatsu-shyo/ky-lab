@@ -7,8 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
+
+
 
 public class MainActivity extends Activity {
 
@@ -80,18 +81,18 @@ public class MainActivity extends Activity {
 
 		}
 	});
-	}
-	/*
+	
+	
 	//初期設定/設定変更ボタン
 	Button btnSetting = (Button)findViewById(R.id.btnSetting);
 	btnSetting.setOnClickListener(new View.OnClickListener(){
 		@Override
 		public void onClick(View v) {
 			Intent intent = new Intent(MainActivity.this, SubActivity.class);
-			startActivity(intent;)
+			startActivity(intent);
 		}
 	});
-	*/
+	}
 	
 	/*
 	//Gmail送信テストボタン
