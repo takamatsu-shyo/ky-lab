@@ -46,6 +46,16 @@ public class SubActivity extends Activity {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 		Editor e = sp.edit();
 		e.putString("senderName", editText.getText().toString()).commit();
+		
+		editText = (EditText)findViewById(R.id.editRecieverAdress);
+		e.putString("recieverAdress", editText.getText().toString()).commit();
+		
+		editText = (EditText)findViewById(R.id.editTitle);
+		e.putString("title", editText.getText().toString()).commit();
+		
+		editText = (EditText)findViewById(R.id.editMessage);
+		e.putString("message", editText.getText().toString()).commit();
+		
 	}
 	
 	//テストボタン

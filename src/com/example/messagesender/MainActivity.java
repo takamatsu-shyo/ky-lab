@@ -1,5 +1,7 @@
 package com.example.messagesender;
 
+import java.util.Calendar;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -8,23 +10,37 @@ import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.TextView.BufferType;
 
 
 
 public class MainActivity extends Activity {
 
+    private ProgressDialog dialog;  
+    TextView messageText;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		messageText = (TextView) findViewById(R.id.textView1);
+        // くるくるを表示  
+        dialog = new ProgressDialog(MainActivity.this);  
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);  
+        dialog.setMessage("メール中");  
+        dialog.show();  
 		//メールを送る処理
 		sendMail();		
 		
@@ -101,13 +117,31 @@ public class MainActivity extends Activity {
 			startActivity(intent);
 		}
 	});
+	
+
+
 	}
 	
-	/**
-	 * メールを送る処理
+	/*
+	 メールを送る処理
 	 */
 	protected void sendMail(){
-		String url = "http://mail.doyeah.info/mail.php?to=kasuya-u@yama.info.waseda.ac.jp&from=kasuya-u@yama.info.waseda.ac.jp&message=ちょりっす&subject=今帰る";
+		//sharedPreference から送信メールデータを取得
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		//初回起動時エラー回避のための一時的な処理
+		String senderName		= "yano";
+		String recieverAdress	= "takamatsu.shyo@gmail.com";
+		String title			= "initialTitle";
+		String message			= "initialMessage";
+				
+		senderName		= sp.getString("senderName", null);
+		recieverAdress	= sp.getString("recieverAdress", null);
+		title			= sp.getString("title", null);
+		message			= sp.getString("message", null);
+		
+		//String url = "http://mail.doyeah.info/mail.php?to=kasuya-u@yama.info.waseda.ac.jp&from=kasuya-u@yama.info.waseda.ac.jp&message=ちょりっす&subject=今帰る";
+		String url = "http://mail.doyeah.info/mail.php?to="+ recieverAdress +"&from="+ senderName +"&message="+ message +"&subject="+ title;
 		AsyncSendMail sync = new AsyncSendMail();
 		sync.execute(url);
 	}
@@ -125,7 +159,27 @@ public class MainActivity extends Activity {
 		protected String doInBackground(String... params) {
 			return doGet(params[0]);
 		}
-
+		
+		 @Override  
+	        public void onPostExecute(String params) {  
+	            // くるくるを消去  
+	            dialog.dismiss();  
+	            final Calendar calendar = Calendar.getInstance();
+	            final int hour = calendar.get(Calendar.HOUR_OF_DAY);
+	            final int minute = calendar.get(Calendar.MINUTE);
+	            final int second = calendar.get(Calendar.SECOND);
+	            if(params.equals("send")){
+	            	messageText.setText("メールが送信されました(" + hour + ":" + minute + ":" + second + ")");
+	            }
+	            else if(params.equals("not send")){
+	            	messageText.setText("メールが送れませんでした。下記のボタンから設定を見直すと送れる可能性があります");
+	            }
+	            else{
+	            	messageText.setText("サーバー調整中です。下記のボタンからメールで送って下さい");
+	            }
+	            
+	            
+	        }  
 		/**
 		 * メールを送る処理
 		 * @param url
