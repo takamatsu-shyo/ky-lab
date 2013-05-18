@@ -12,6 +12,7 @@ public class SubActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		/*
 		//‚à‚Ç‚éƒ{ƒ^ƒ“
 		Button btnSetting = (Button)findViewById(R.id.btnSBack);
 		btnSetting.setOnClickListener(new View.OnClickListener(){
@@ -20,6 +21,7 @@ public class SubActivity extends Activity {
 				finish();
 			}
 		});
+		*/
 	}
 
 	@Override

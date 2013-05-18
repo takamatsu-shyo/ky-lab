@@ -80,7 +80,8 @@ public class MainActivity extends Activity {
 
 		}
 	});
-	
+	}
+	/*
 	//初期設定/設定変更ボタン
 	Button btnSetting = (Button)findViewById(R.id.btnSetting);
 	btnSetting.setOnClickListener(new View.OnClickListener(){
@@ -90,6 +91,7 @@ public class MainActivity extends Activity {
 			startActivity(intent;)
 		}
 	});
+	*/
 	
 	/*
 	//Gmail送信テストボタン
