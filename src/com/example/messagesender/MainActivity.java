@@ -1,9 +1,16 @@
 package com.example.messagesender;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -17,7 +24,10 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-	
+		
+		//メールを送る処理
+		sendMail();		
+		
 	//送信成功時　動作確認ボタン
 	Button btnAdd = (Button)findViewById(R.id.btnOK);
 	btnAdd.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +92,6 @@ public class MainActivity extends Activity {
 		}
 	});
 	
-	
 	//初期設定/設定変更ボタン
 	Button btnSetting = (Button)findViewById(R.id.btnSetting);
 	btnSetting.setOnClickListener(new View.OnClickListener(){
@@ -94,6 +103,54 @@ public class MainActivity extends Activity {
 	});
 	}
 	
+	/**
+	 * メールを送る処理
+	 */
+	protected void sendMail(){
+		String url = "http://mail.doyeah.info/mail.php?to=kasuya-u@yama.info.waseda.ac.jp&from=kasuya-u@yama.info.waseda.ac.jp&message=ちょりっす&subject=今帰る";
+		AsyncSendMail sync = new AsyncSendMail();
+		sync.execute(url);
+	}
+	
+	/**
+	 * 
+	 * 非同期スレッドでメールを送るクラス
+	 */
+	class AsyncSendMail extends AsyncTask<String, Void, String> {
+		
+		/**
+		 * 非同期処理
+		 */
+		@Override
+		protected String doInBackground(String... params) {
+			return doGet(params[0]);
+		}
+
+		/**
+		 * メールを送る処理
+		 * @param url
+		 * @return httpgetの結果
+		 */
+	    public String doGet( String url ){
+	    	try{
+	    		HttpGet method = new HttpGet( url );
+	    		DefaultHttpClient client = new DefaultHttpClient();
+	    		// ヘッダを設定する
+	    		method.setHeader( "Connection", "Keep-Alive" );
+	        
+	    		HttpResponse response = client.execute( method );
+	    		int status = response.getStatusLine().getStatusCode();
+	    		if ( status != HttpStatus.SC_OK )
+	    			throw new Exception( "" );
+	        
+	    		return EntityUtils.toString( response.getEntity(), "UTF-8" );
+	    	}
+	    	catch ( Exception e )
+	    	{
+	    		return null;
+	    	}
+	    }
+	}
 	/*
 	//Gmail送信テストボタン
 	Button btnGmail = (Button)findViewById(R.id.btnGmail);
@@ -140,7 +197,6 @@ public class MainActivity extends Activity {
 		alertDialog.show();
 	}
 
-	
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

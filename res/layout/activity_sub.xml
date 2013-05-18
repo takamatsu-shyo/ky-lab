@@ -2,7 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:gravity="right"
     android:orientation="vertical" >
-    
+
+	<TextView android:id="@+id/textView1" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_margin="5dp"
+		android:text="設定画面 " />
+
+		
+	<EditText android:id="@+id/editSenderName"
+		android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:ems="10" android:hint="@string/senderName_default" />
+
+	<EditText android:id="@+id/editRecieverAdress"
+		android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:ems="10" android:inputType="textEmailAddress" android:hint="@string/recieverAdress_default" />
+
+	<EditText android:id="@+id/editTitle" android:layout_width="match_parent"
+		android:layout_height="wrap_content" android:ems="10"
+		android:hint="@string/title_default" />
+
+	<EditText android:id="@+id/editMessage" android:layout_width="match_parent"
+		android:layout_height="wrap_content" android:ems="10"
+		android:hint="@string/message_default" />
+
+	<Button
+	    android:id="@+id/button1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_marginRight="5dp"
+	    android:text="登録" />
 
 </LinearLayout>
