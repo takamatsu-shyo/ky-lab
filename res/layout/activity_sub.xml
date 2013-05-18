@@ -6,32 +6,82 @@
     android:gravity="right"
     android:orientation="vertical" >
 
-	<TextView android:id="@+id/textView1" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_margin="5dp"
-		android:text="設定画面 " />
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_margin="5dp"
+        android:text="設定画面 " />
 
-		
-	<EditText android:id="@+id/editSenderName"
-		android:layout_width="match_parent" android:layout_height="wrap_content"
-		android:ems="10" android:hint="@string/senderName_default" />
+    <EditText
+        android:id="@+id/editSenderName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/senderName_default" />
 
-	<EditText android:id="@+id/editRecieverAdress"
-		android:layout_width="match_parent" android:layout_height="wrap_content"
-		android:ems="10" android:inputType="textEmailAddress" android:hint="@string/recieverAdress_default" />
+    <EditText
+        android:id="@+id/editRecieverAdress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/recieverAdress_default"
+        android:inputType="textEmailAddress" />
 
-	<EditText android:id="@+id/editTitle" android:layout_width="match_parent"
-		android:layout_height="wrap_content" android:ems="10"
-		android:hint="@string/title_default" />
+    <EditText
+        android:id="@+id/editTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/title_default" />
 
-	<EditText android:id="@+id/editMessage" android:layout_width="match_parent"
-		android:layout_height="wrap_content" android:ems="10"
-		android:hint="@string/message_default" />
+    <EditText
+        android:id="@+id/editMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/message_default" />
 
-	<Button
-	    android:id="@+id/button1"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_marginRight="5dp"
-	    android:text="登録" />
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="登録" />
+
+    <Button
+        android:id="@+id/btnRead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="読み込みテスト" />
+
+    <TextView
+        android:id="@+id/textSenderName"
+        android:layout_width="141dp"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/textRecieverName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/textMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="TextView" />
 
 </LinearLayout>
