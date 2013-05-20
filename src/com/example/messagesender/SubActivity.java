@@ -29,6 +29,7 @@ public class SubActivity extends Activity {
 		});
 		
 		//テストボタン
+		/*
 		Button btnRead = (Button)findViewById(R.id.btnRead);
 		btnRead.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -37,6 +38,7 @@ public class SubActivity extends Activity {
 				readButtonClick();
 			}
 		});
+		*/
 	}
 	
 	
@@ -59,9 +61,12 @@ public class SubActivity extends Activity {
 	}
 	
 	//テストボタン
+	/*
 	private void readButtonClick(){
 		TextView textView = (TextView) findViewById(R.id.textSenderName);
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 		textView.setText(sp.getString("senderName", null), BufferType.NORMAL);
 	}
+	*/
+	
 }

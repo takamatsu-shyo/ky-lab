@@ -12,33 +12,23 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
-
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="75dp"
-        android:layout_toRightOf="@+id/textView1"
-        android:text="NG" />
-
-    <Button
-        android:id="@+id/btnOK"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/btnCancel"
-        android:layout_alignBottom="@+id/btnCancel"
-        android:layout_alignRight="@+id/textView1"
-        android:text="OK" />
+        android:text="..." />
 
     <Button
         android:id="@+id/btnSetting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/btnOK"
-        android:layout_below="@+id/btnCancel"
+        android:layout_below="@+id/textView1"
         android:layout_marginTop="33dp"
         android:text="初期設定 / 設定変更" />
+
+    <Button
+        android:id="@+id/btnGmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btnSetting"
+        android:layout_alignRight="@+id/btnSetting"
+        android:layout_below="@+id/btnSetting"
+        android:text="Gmailで送る" />
 
 </RelativeLayout>

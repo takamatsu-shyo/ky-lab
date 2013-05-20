@@ -30,6 +30,13 @@ public class MainActivity extends Activity {
     private ProgressDialog dialog;  
     TextView messageText;
     
+	//初回起動時エラー回避のためのダミー初期値
+    //一時的な処理
+	public String senderName		= "yano";
+	public String recieverAdress	= "takamatsu.shyo@gmail.com";
+	public String title				= "initialTitle";
+	public String message			= "initialMessage";
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,7 +51,38 @@ public class MainActivity extends Activity {
 		//メールを送る処理
 		sendMail();		
 		
+		
+		//送信失敗時　Gmail送信ボタン
+		//sharedPreference から送信メールデータを取得
+		//同じ処理が自動送信部分にもあるので整理する予定
+		
+		Button btnGmail = (Button)findViewById(R.id.btnGmail);
+		btnGmail.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				readButtonClick();
+				
+				Intent intent = new Intent();
+				
+				//あて先は配列で受け取るみたいなので、キャスト
+				String[] arrayRecieverAdress = {recieverAdress, "takamatsu.shyo@googlemail.com"};	
+				
+				intent.putExtra(Intent.EXTRA_EMAIL, arrayRecieverAdress);
+				intent.putExtra(Intent.EXTRA_SUBJECT, title);
+				intent.putExtra(Intent.EXTRA_TEXT, message + "\n from " + senderName);
+				intent.setType("message/ref822");
+				
+				intent.setClassName("com.google.android.gm","com.google.android.gm.ComposeActivityGmail");
+				
+				startActivity(intent);
+			}
+		});
+		
+		
 	//送信成功時　動作確認ボタン
+	/*
 	Button btnAdd = (Button)findViewById(R.id.btnOK);
 	btnAdd.setOnClickListener(new View.OnClickListener() {
 	
@@ -54,8 +92,10 @@ public class MainActivity extends Activity {
 			MessageBox("送信しました。　：）","message");
 		}
 	});
+	*/
 	
 	//送信失敗時　動作確認テストボタン
+	/*
 	Button btnCancel = (Button)findViewById(R.id.btnCancel);
 	btnCancel.setOnClickListener(new View.OnClickListener() {
 	
@@ -107,7 +147,7 @@ public class MainActivity extends Activity {
 
 		}
 	});
-	
+	*/
 	//初期設定/設定変更ボタン
 	Button btnSetting = (Button)findViewById(R.id.btnSetting);
 	btnSetting.setOnClickListener(new View.OnClickListener(){
@@ -122,6 +162,16 @@ public class MainActivity extends Activity {
 
 	}
 	
+	//gmail送信ボタン　押下時にデータを取る部分
+	public void readButtonClick(){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		senderName		= sp.getString("senderName", null);
+		recieverAdress	= sp.getString("recieverAdress", null);
+		title			= sp.getString("title", null);
+		message			= sp.getString("message", null);
+	}
+	
 	/*
 	 メールを送る処理
 	 */
@@ -129,12 +179,6 @@ public class MainActivity extends Activity {
 		//sharedPreference から送信メールデータを取得
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		//初回起動時エラー回避のための一時的な処理
-		String senderName		= "yano";
-		String recieverAdress	= "takamatsu.shyo@gmail.com";
-		String title			= "initialTitle";
-		String message			= "initialMessage";
-				
 		senderName		= sp.getString("senderName", null);
 		recieverAdress	= sp.getString("recieverAdress", null);
 		title			= sp.getString("title", null);
@@ -168,6 +212,10 @@ public class MainActivity extends Activity {
 	            final int hour = calendar.get(Calendar.HOUR_OF_DAY);
 	            final int minute = calendar.get(Calendar.MINUTE);
 	            final int second = calendar.get(Calendar.SECOND);
+	            if (params == null){
+	            	messageText.setText("下記のボタンから設定をしてください");
+	            	return;
+	            }
 	            if(params.equals("send")){
 	            	messageText.setText("メールが送信されました(" + hour + ":" + minute + ":" + second + ")");
 	            }
@@ -205,35 +253,10 @@ public class MainActivity extends Activity {
 	    	}
 	    }
 	}
-	/*
+	
 	//Gmail送信テストボタン
-	Button btnGmail = (Button)findViewById(R.id.btnGmail);
-	btnGmail.setOnClickListener(new View.OnClickListener() {
-		
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			Intent intent = new Intent();
-			
-			String[] strTo = {"shoyano.ee@ezweb.ne.jp"};
-			intent.putExtra(Intent.EXTRA_EMAIL, strTo);
-			intent.putExtra(Intent.EXTRA_SUBJECT, "今から帰ります[タイトル]");
-			intent.putExtra(Intent.EXTRA_TEXT, "あと１時間くらい[本文]\n");
-			intent.setType("message/ref822");
-			
-			intent.setClassName("com.google.android.gm","com.google.android.gm.ComposeActivityGmail");
-			
-			
-			//intent.setAction(Intent.ACTION_VIEW);
-			//intent.setDataAndNormalize(Uri.parse("http://b.hatna.ne.jp"));
-			
-			
-			//intent.setClassName("com.android.broser","com.android.browser.BrowserActivity");
-			startActivity(intent);
-		}
-	});
-	}
-	*/
+
+	
 	void MessageBox(String message, String title){
 		AlertDialog.Builder alertDialog=new AlertDialog.Builder(MainActivity.this);
 		alertDialog.setTitle(title);
