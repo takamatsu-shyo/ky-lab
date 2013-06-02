@@ -1,11 +1,49 @@
 package com.example.messagesender;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+//import javax.net.ssl.SSLContext;
+//import javax.net.ssl.SSLSocketFactory;
+
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.SingleClientConnManager;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
@@ -23,13 +61,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 
 public class MainActivity extends Activity {
 
     private ProgressDialog dialog;  
     TextView messageText;
-    
+    private String request_encoding = "UTF-8";
 	//初回起動時エラー回避のためのダミー初期値
     //一時的な処理
 	public String senderName		= "yano";
@@ -37,13 +81,78 @@ public class MainActivity extends Activity {
 	public String title				= "initialTitle";
 	public String message			= "initialMessage";
     
+	
+    private String iv = "fedcba9876543210";//Dummy iv (CHANGE IT!)
+    private IvParameterSpec ivspec;
+    private SecretKeySpec keyspec;
+    private Cipher cipher;
+    
+    private String SecretKey = "0123456789abcdef";//Dummy secretKey (CHANGE IT!)
+	
+    /**
+     * 暗号化プログラムの初期化
+     */
+    protected void initEnc(){
+        ivspec = new IvParameterSpec(iv.getBytes());
+        keyspec = new SecretKeySpec(SecretKey.getBytes(), "AES");
+        try {
+                cipher = Cipher.getInstance("AES/CBC/NoPadding");
+        } catch (NoSuchAlgorithmException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+        }
+    }
+    
+    private static String padString(String source)
+    {
+      char paddingChar = ' ';
+      int size = 16;
+      int x = source.length() % size;
+      int padLength = size - x;
+
+      for (int i = 0; i < padLength; i++)
+      {
+              source += paddingChar;
+      }
+
+      return source;
+    }
+    
+    
+    /**
+     * 文字列の暗号化
+     */
+    protected byte[] encString(String str) throws Exception{
+        if(str == null || str.length() == 0){
+            return new byte[0];
+        }
+	    byte[] encrypted = null;
+	
+	    try {
+	            cipher.init(Cipher.ENCRYPT_MODE, keyspec, ivspec);
+	            byte[] bytes = padString(str).getBytes("UTF-8");
+	            encrypted = cipher.doFinal(bytes);
+	    } catch (Exception e)
+	    {                       
+	            throw new Exception("[encrypt] " + e.getMessage());
+	    }
+	    
+	    return encrypted;
+    }
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
 		messageText = (TextView) findViewById(R.id.textView1);
-        // くるくるを表示  
+        
+
+		initEnc();
+		
+		// くるくるを表示  
         dialog = new ProgressDialog(MainActivity.this);  
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);  
         dialog.setMessage("メール中");  
@@ -184,24 +293,49 @@ public class MainActivity extends Activity {
 		title			= sp.getString("title", null);
 		message			= sp.getString("message", null);
 		
-		//String url = "http://mail.doyeah.info/mail.php?to=kasuya-u@yama.info.waseda.ac.jp&from=kasuya-u@yama.info.waseda.ac.jp&message=ちょりっす&subject=今帰る";
-		String url = "http://mail.doyeah.info/mail.php?to="+ recieverAdress +"&from="+ senderName +"&message="+ message +"&subject="+ title;
-		AsyncSendMail sync = new AsyncSendMail();
-		sync.execute(url);
+		String url = "http://mail.doyeah.info/mail.php";
+		byte[] urlBytes;
+	    HttpPost request = new HttpPost( url );
+		List<NameValuePair> post_params = new ArrayList<NameValuePair>();
+		post_params.add(new BasicNameValuePair("to", senderName));
+		post_params.add(new BasicNameValuePair("from", recieverAdress));
+		post_params.add(new BasicNameValuePair("subject", title));
+		post_params.add(new BasicNameValuePair("message", message));		
+	    try {
+	        // 送信パラメータのエンコードを指定
+	        request.setEntity(new UrlEncodedFormEntity(post_params, "UTF-8"));
+	        urlBytes = url.getBytes("UTF-8");
+	    } 
+	    catch (UnsupportedEncodingException e1) {
+	        e1.printStackTrace();
+	        return;
+	      }
+	    AsyncSendMail sync = new AsyncSendMail();
+	    
+	    String postParams = senderName + "&" + recieverAdress + "&" + title + "&" + message;
+	    try{
+	    	byte[] paramBytes = encString(postParams);
+	    	sync.execute(urlBytes, paramBytes);
+	    }
+	    catch(Exception e){
+	    	e.printStackTrace();
+	    }
+
 	}
 	
 	/**
 	 * 
 	 * 非同期スレッドでメールを送るクラス
 	 */
-	class AsyncSendMail extends AsyncTask<String, Void, String> {
+	class AsyncSendMail extends AsyncTask<byte[],Void, String> {
 		
 		/**
 		 * 非同期処理
 		 */
 		@Override
-		protected String doInBackground(String... params) {
-			return doGet(params[0]);
+		protected String doInBackground(byte[]... params) {
+			//return doGet(params[0]);
+			return doPost(params[0],params[1]);
 		}
 		
 		 @Override  
@@ -212,12 +346,16 @@ public class MainActivity extends Activity {
 	            final int hour = calendar.get(Calendar.HOUR_OF_DAY);
 	            final int minute = calendar.get(Calendar.MINUTE);
 	            final int second = calendar.get(Calendar.SECOND);
+	            
+
+	            
 	            if (params == null){
 	            	messageText.setText("下記のボタンから設定をしてください");
 	            	return;
 	            }
+	            params = params.trim();//なぜか最初にスペースが入っているため
 	            if(params.equals("send")){
-	            	messageText.setText("メールが送信されました(" + hour + ":" + minute + ":" + second + ")");
+	            	messageText.setText("メールが送信されました(" + hour + "時" + minute + "分" + second + "秒)");
 	            }
 	            else if(params.equals("not send")){
 	            	messageText.setText("メールが送れませんでした。下記のボタンから設定を見直すと送れる可能性があります");
@@ -252,7 +390,72 @@ public class MainActivity extends Activity {
 	    		return null;
 	    	}
 	    }
+	    
+	    public String doPost(byte[] urlStr, byte[] requestBytes)
+	    {
+	    	  HttpURLConnection http = null;  // HTTP通信
+	    	  OutputStream out = null;   // HTTPリクエスト送信用ストリーム
+	    	  InputStream in = null;    // HTTPレスポンス取得用ストリーム
+	    	  BufferedReader reader = null;  // レスポンスデータ出力用バッファ
+	    	  String result = "";
+	    	  try {
+		    	   // URL指定
+		    	   URL url = new URL(new String(urlStr, "UTF-8"));
+		    	 
+		    	   // HttpURLConnectionインスタンス作成
+		    	   http = (HttpURLConnection)url.openConnection();
+		    	 
+		    	   // POST設定
+		    	   http.setRequestMethod("POST");
+		    	 
+		    	   // HTTPヘッダの「Content-Type」を「application/octet-stream」に設定
+		    	   http.setRequestProperty("Content-Type","application/octet-stream");
+		    	 
+		    	   // URL 接続を使用して入出力を行う
+		    	   http.setDoInput(true);
+		    	   http.setDoOutput(true);
+		    	   // キャッシュは使用しない
+		    	   http.setUseCaches(false);
+		    	  
+		    	   // 接続
+		    	   http.connect();
+		    	   // データを出力
+		    	   out = new BufferedOutputStream(http.getOutputStream());
+		    	   out.write(requestBytes);
+		    	   out.flush();
+		    	   // レスポンスを取得
+		    	   in = new BufferedInputStream(http.getInputStream());
+		    	   reader = new BufferedReader(new InputStreamReader(in));
+		    	   result = reader.readLine();
+	    	  } 
+	    	  catch(Exception e) {
+	    	   e.printStackTrace();
+	    	  } 
+	    	  
+	    	  finally {
+	    	   try {
+		    	    if(reader != null) {
+		    	    	reader.close();
+		    	    }
+		    	    if(in != null) {
+		    	    	in.close();
+		    	    }
+		    	    if(out != null) {
+		    	    	out.close();
+		    	    }
+		    	    if(http != null) {
+		    	    	http.disconnect();
+		    	    }
+	    	   } catch(Exception e) {
+	    	   }
+	    	  }
+	    
+	    	  return result;
+	    }
+	
 	}
+	    
+	
 	
 	//Gmail送信テストボタン
 
