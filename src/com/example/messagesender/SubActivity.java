@@ -45,7 +45,7 @@ public class SubActivity extends Activity {
 	
 	//登録ボタン
 	private void saveButtonClick(){
-		
+		//各テキストボックスの値を読み込む
 		EditText editTextSenderName = (EditText)findViewById(R.id.editSenderName);
 		EditText editTextRecieverAddress = (EditText)findViewById(R.id.editRecieverAdress);
 		EditText editTextTitle = (EditText)findViewById(R.id.editTitle);
@@ -58,8 +58,9 @@ public class SubActivity extends Activity {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 		Editor e = sp.edit();
 		
+		//空白でなければ保存
 		if(!senderName.equals("")){
-			senderName.replace("&", "and");
+			senderName.replace("&", "and");//&はandに置換
 			e.putString("senderName", senderName).commit();
 		}
 		
@@ -78,6 +79,7 @@ public class SubActivity extends Activity {
 			e.putString("message", message).commit();
 		}			
 		
+		//設定完了したらintentでメール画面に繊維
 		Intent intent = new Intent(SubActivity.this,MainActivity.class);
 		startActivity(intent);
 		
