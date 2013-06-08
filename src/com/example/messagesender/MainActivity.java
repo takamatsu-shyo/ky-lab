@@ -60,6 +60,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
+import android.widget.Toast;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -184,8 +185,11 @@ public class MainActivity extends Activity {
 				intent.setType("message/ref822");
 				
 				intent.setClassName("com.google.android.gm","com.google.android.gm.ComposeActivityGmail");
-				
+				try{
 				startActivity(intent);
+				}catch(Exception e){
+					Toast.makeText(MainActivity.this, "g-mailアプリを開けません。アプリがインストールされていない可能性があります", Toast.LENGTH_LONG).show();
+				}
 			}
 		});
 		
