@@ -2,6 +2,7 @@ package com.example.messagesender;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -44,19 +45,41 @@ public class SubActivity extends Activity {
 	
 	//“o˜^ƒ{ƒ^ƒ“
 	private void saveButtonClick(){
-		EditText editText = (EditText)findViewById(R.id.editSenderName);
+		
+		EditText editTextSenderName = (EditText)findViewById(R.id.editSenderName);
+		EditText editTextRecieverAddress = (EditText)findViewById(R.id.editRecieverAdress);
+		EditText editTextTitle = (EditText)findViewById(R.id.editTitle);
+		EditText editTextMessage = (EditText)findViewById(R.id.editMessage);
+		String senderName = editTextSenderName.getText().toString();
+		String recieverAddress = editTextRecieverAddress.getText().toString();
+		String title = editTextTitle.getText().toString();
+		String message = editTextMessage.getText().toString();
+		
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 		Editor e = sp.edit();
-		e.putString("senderName", editText.getText().toString()).commit();
 		
-		editText = (EditText)findViewById(R.id.editRecieverAdress);
-		e.putString("recieverAdress", editText.getText().toString()).commit();
+		if(!senderName.equals("")){
+			senderName.replace("&", "and");
+			e.putString("senderName", senderName).commit();
+		}
 		
-		editText = (EditText)findViewById(R.id.editTitle);
-		e.putString("title", editText.getText().toString()).commit();
+		if(!recieverAddress.equals("")){
+			senderName.replace("&", "and");
+			e.putString("recieverAdress", recieverAddress).commit();
+		}
+				
+		if(!title.equals("")){
+			senderName.replace("&", "and");
+			e.putString("title", title).commit();
+		}
 		
-		editText = (EditText)findViewById(R.id.editMessage);
-		e.putString("message", editText.getText().toString()).commit();
+		if(!message.equals("")){
+			senderName.replace("&", "and");
+			e.putString("message", message).commit();
+		}			
+		
+		Intent intent = new Intent(SubActivity.this,MainActivity.class);
+		startActivity(intent);
 		
 	}
 	
