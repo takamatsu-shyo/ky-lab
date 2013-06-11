@@ -135,7 +135,7 @@ public class MainActivity extends Activity {
 	
 	    try {
 	            cipher.init(Cipher.ENCRYPT_MODE, keyspec, ivspec);
-	            byte[] bytes = padString(str).getBytes("UTF-8");
+	            byte[] bytes = padString(str).getBytes(request_encoding);
 	            encrypted = cipher.doFinal(bytes);
 	    } catch (Exception e)
 	    {                       
@@ -251,8 +251,8 @@ public class MainActivity extends Activity {
 		post_params.add(new BasicNameValuePair("message", message));		
 	    try {
 	        // 送信パラメータのエンコードを指定
-	        request.setEntity(new UrlEncodedFormEntity(post_params, "UTF-8"));
-	        urlBytes = url.getBytes("UTF-8");
+	        request.setEntity(new UrlEncodedFormEntity(post_params, request_encoding));
+	        urlBytes = url.getBytes(request_encoding);
 	    } 
 	    catch (UnsupportedEncodingException e1) {
 	        e1.printStackTrace();
@@ -287,57 +287,34 @@ public class MainActivity extends Activity {
 		}
 		
 		 @Override  
-	        public void onPostExecute(String params) {  
-	            // くるくるを消去  
-	            dialog.dismiss();  
-	            final Calendar calendar = Calendar.getInstance();
-	            final int hour = calendar.get(Calendar.HOUR_OF_DAY);
-	            final int minute = calendar.get(Calendar.MINUTE);
-	            final int second = calendar.get(Calendar.SECOND);
-	            
+        public void onPostExecute(String params) {  
+            // くるくるを消去  
+            dialog.dismiss();  
+            final Calendar calendar = Calendar.getInstance();
+            final int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            final int minute = calendar.get(Calendar.MINUTE);
+            final int second = calendar.get(Calendar.SECOND);
+            
 
-	            
-	            if (params == null){
-	            	messageText.setText("下記のボタンから設定をしてください");
-	            	return;
-	            }
-	            params = params.trim();//なぜか最初にスペースが入っているため
-	            if(params.equals("send")){
-	            	messageText.setText("メールが送信されました(" + hour + "時" + minute + "分" + second + "秒)");
-	            }
-	            else if(params.equals("not send")){
-	            	messageText.setText("メールが送れませんでした。下記のボタンから設定を見直すと送れる可能性があります");
-	            }
-	            else{
-	            	messageText.setText("サーバー調整中です。下記のボタンからメールで送って下さい");
-	            }
-	            
-	            
-	        }  
-		/**
-		 * メールを送る処理
-		 * @param url
-		 * @return httpgetの結果
-		 */
-	    public String doGet( String url ){
-	    	try{
-	    		HttpGet method = new HttpGet( url );
-	    		DefaultHttpClient client = new DefaultHttpClient();
-	    		// ヘッダを設定する
-	    		method.setHeader( "Connection", "Keep-Alive" );
-	        
-	    		HttpResponse response = client.execute( method );
-	    		int status = response.getStatusLine().getStatusCode();
-	    		if ( status != HttpStatus.SC_OK )
-	    			throw new Exception( "" );
-	        
-	    		return EntityUtils.toString( response.getEntity(), "UTF-8" );
-	    	}
-	    	catch ( Exception e )
-	    	{
-	    		return null;
-	    	}
-	    }
+            
+            if (params == null){
+            	messageText.setText("下記のボタンから設定をしてください");
+            	return;
+            }
+            params = params.trim();//なぜか最初にスペースが入っているため
+            if(params.equals("send")){
+            	messageText.setText("メールが送信されました(" + hour + "時" + minute + "分" + second + "秒)");
+            }
+            else if(params.equals("not send")){
+            	messageText.setText("メールが送れませんでした。下記のボタンから設定を見直すと送れる可能性があります");
+            }
+            else{
+            	messageText.setText("サーバー調整中です。下記のボタンからメールで送って下さい");
+            }
+            
+            
+        }  
+
 	    
 	    public String doPost(byte[] urlStr, byte[] requestBytes)
 	    {
@@ -348,23 +325,18 @@ public class MainActivity extends Activity {
 	    	  String result = "";
 	    	  try {
 		    	   // URL指定
-		    	   URL url = new URL(new String(urlStr, "UTF-8"));
-		    	 
+		    	   URL url = new URL(new String(urlStr, request_encoding));
 		    	   // HttpURLConnectionインスタンス作成
 		    	   http = (HttpURLConnection)url.openConnection();
-		    	 
 		    	   // POST設定
 		    	   http.setRequestMethod("POST");
-		    	 
 		    	   // HTTPヘッダの「Content-Type」を「application/octet-stream」に設定
 		    	   http.setRequestProperty("Content-Type","application/octet-stream");
-		    	 
 		    	   // URL 接続を使用して入出力を行う
 		    	   http.setDoInput(true);
 		    	   http.setDoOutput(true);
 		    	   // キャッシュは使用しない
 		    	   http.setUseCaches(false);
-		    	  
 		    	   // 接続
 		    	   http.connect();
 		    	   // データを出力
@@ -397,10 +369,8 @@ public class MainActivity extends Activity {
 	    	   } catch(Exception e) {
 	    	   }
 	    	  }
-	    
 	    	  return result;
 	    }
-	
 	}
 	    
 	
