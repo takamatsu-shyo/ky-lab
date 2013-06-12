@@ -60,6 +60,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
+import android.widget.Toast;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -73,10 +74,11 @@ public class MainActivity extends Activity {
 
     private ProgressDialog dialog;  
     TextView messageText;
-    private String request_encoding = "UTF-8";
+    private static String request_encoding = "utf-8";
 	//初回起動時エラー回避のためのダミー初期値
     //一時的な処理
-	public String senderName		= "yano";
+    public String initialSenderName = "yano-initialABCDX";
+	public String senderName		= "yano-initialABCDX";
 	public String recieverAdress	= "takamatsu.shyo@gmail.com";
 	public String title				= "initialTitle";
 	public String message			= "initialMessage";
@@ -98,10 +100,8 @@ public class MainActivity extends Activity {
         try {
                 cipher = Cipher.getInstance("AES/CBC/NoPadding");
         } catch (NoSuchAlgorithmException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
         } catch (NoSuchPaddingException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
         }
     }
@@ -121,6 +121,33 @@ public class MainActivity extends Activity {
       return source;
     }
     
+    private static byte[] padByte(String source)
+    {
+      byte paddingByte = 0x20;
+      int size = 16;
+      byte[] sourceBytes;
+      try{
+          sourceBytes = source.getBytes(request_encoding);
+      }catch(Exception e){
+    	  return null;
+      }
+      int x = sourceBytes.length % size;
+      int padLength = size - x;
+      
+      byte[] result = new byte[sourceBytes.length + padLength];
+
+      for (int i = 0; i < sourceBytes.length; i++)
+      {
+              result[i] = sourceBytes[i];
+      }
+      for(int i=sourceBytes.length; i< result.length;i++){
+    	  result[i] = paddingByte;
+      }
+
+      return result;
+    }
+    
+    
     
     /**
      * 文字列の暗号化
@@ -133,7 +160,7 @@ public class MainActivity extends Activity {
 	
 	    try {
 	            cipher.init(Cipher.ENCRYPT_MODE, keyspec, ivspec);
-	            byte[] bytes = padString(str).getBytes("UTF-8");
+	            byte[] bytes = padByte(str);
 	            encrypted = cipher.doFinal(bytes);
 	    } catch (Exception e)
 	    {                       
@@ -149,18 +176,8 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		messageText = (TextView) findViewById(R.id.textView1);
         
-
 		initEnc();
-		
-		// くるくるを表示  
-        dialog = new ProgressDialog(MainActivity.this);  
-        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);  
-        dialog.setMessage("メール中");  
-        dialog.show();  
-		//メールを送る処理
-		sendMail();		
-		
-		
+				
 		//送信失敗時　Gmail送信ボタン
 		//sharedPreference から送信メールデータを取得
 		//同じ処理が自動送信部分にもあるので整理する予定
@@ -170,9 +187,7 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				readButtonClick();
-				
 				Intent intent = new Intent();
 				
 				//あて先は配列で受け取るみたいなので、キャスト
@@ -184,90 +199,56 @@ public class MainActivity extends Activity {
 				intent.setType("message/ref822");
 				
 				intent.setClassName("com.google.android.gm","com.google.android.gm.ComposeActivityGmail");
-				
+				try{
 				startActivity(intent);
+				}catch(Exception e){
+					Toast.makeText(MainActivity.this, "g-mailアプリを開けません。アプリがインストールされていない可能性があります", Toast.LENGTH_LONG).show();
+				}
 			}
 		});
 		
 		
-	//送信成功時　動作確認ボタン
-	/*
-	Button btnAdd = (Button)findViewById(R.id.btnOK);
-	btnAdd.setOnClickListener(new View.OnClickListener() {
-	
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			MessageBox("送信しました。　：）","message");
-		}
-	});
-	*/
-	
-	//送信失敗時　動作確認テストボタン
-	/*
-	Button btnCancel = (Button)findViewById(R.id.btnCancel);
-	btnCancel.setOnClickListener(new View.OnClickListener() {
-	
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			
-			//メッセージボックス
-			//MessageBox("失敗しました。Gmailで送信します。","message");
-			
-			//アラートダイアログ
-			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-			alertDialogBuilder.setTitle("自動送信に失敗しました");
-			alertDialogBuilder.setMessage("Gmailで送信します");
+		//初期設定/設定変更ボタン
+		Button btnSetting = (Button)findViewById(R.id.btnSetting);
+		btnSetting.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this, SubActivity.class);
+				startActivity(intent);
+			}
+		});
+		
+		sendMailTask();
 
-			alertDialogBuilder.setPositiveButton("OK", 
-					new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-							Intent intent = new Intent();
-							
-							String[] strTo = {"shoyano.ee@ezweb.ne.jp"};
-							intent.putExtra(Intent.EXTRA_EMAIL, strTo);
-							intent.putExtra(Intent.EXTRA_SUBJECT, "今から帰ります[タイトル]");
-							intent.putExtra(Intent.EXTRA_TEXT, "あと１時間くらい[本文]\n");
-							intent.setType("message/ref822");
-							
-							intent.setClassName("com.google.android.gm","com.google.android.gm.ComposeActivityGmail");
-							startActivity(intent);
-						}
-					});
-			
-			alertDialogBuilder.setNegativeButton("キャンセル", 
-					new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-							
-						}
-					});
-			
-			//キャンセル可能か設定
-			alertDialogBuilder.setCancelable(true);
-			AlertDialog alertDialog = alertDialogBuilder.create();
-			alertDialog.show();
+	}
+	
+	private void loadData(){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-		}
-	});
-	*/
-	//初期設定/設定変更ボタン
-	Button btnSetting = (Button)findViewById(R.id.btnSetting);
-	btnSetting.setOnClickListener(new View.OnClickListener(){
-		@Override
-		public void onClick(View v) {
+		senderName		= sp.getString("senderName", null);
+		recieverAdress	= sp.getString("recieverAdress", null);
+		title			= sp.getString("title", null);
+		message			= sp.getString("message", null);
+
+	}
+	
+	public void sendMailTask(){
+		
+		loadData();
+
+		if(senderName == null || senderName.equals(initialSenderName)){
 			Intent intent = new Intent(MainActivity.this, SubActivity.class);
 			startActivity(intent);
 		}
-	});
-	
-
+		else{
+			// くるくるを表示  
+		    dialog = new ProgressDialog(MainActivity.this);  
+		    dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);  
+		    dialog.setMessage("メール中");  
+		    dialog.show();  
+			//メールを送る処理
+			sendMail();		
+		}
 
 	}
 	
@@ -286,25 +267,13 @@ public class MainActivity extends Activity {
 	 */
 	protected void sendMail(){
 		//sharedPreference から送信メールデータを取得
-		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-		
-		senderName		= sp.getString("senderName", null);
-		recieverAdress	= sp.getString("recieverAdress", null);
-		title			= sp.getString("title", null);
-		message			= sp.getString("message", null);
 		
 		String url = "http://mail.doyeah.info/mail.php";
 		byte[] urlBytes;
-	    HttpPost request = new HttpPost( url );
-		List<NameValuePair> post_params = new ArrayList<NameValuePair>();
-		post_params.add(new BasicNameValuePair("to", senderName));
-		post_params.add(new BasicNameValuePair("from", recieverAdress));
-		post_params.add(new BasicNameValuePair("subject", title));
-		post_params.add(new BasicNameValuePair("message", message));		
+
 	    try {
 	        // 送信パラメータのエンコードを指定
-	        request.setEntity(new UrlEncodedFormEntity(post_params, "UTF-8"));
-	        urlBytes = url.getBytes("UTF-8");
+	        urlBytes = url.getBytes(request_encoding);
 	    } 
 	    catch (UnsupportedEncodingException e1) {
 	        e1.printStackTrace();
@@ -312,7 +281,7 @@ public class MainActivity extends Activity {
 	      }
 	    AsyncSendMail sync = new AsyncSendMail();
 	    
-	    String postParams = senderName + "&" + recieverAdress + "&" + title + "&" + message;
+	    String postParams =  recieverAdress + "&" + senderName +  "&" + title + "&" + message;
 	    try{
 	    	byte[] paramBytes = encString(postParams);
 	    	sync.execute(urlBytes, paramBytes);
@@ -334,62 +303,38 @@ public class MainActivity extends Activity {
 		 */
 		@Override
 		protected String doInBackground(byte[]... params) {
-			//return doGet(params[0]);
 			return doPost(params[0],params[1]);
 		}
 		
 		 @Override  
-	        public void onPostExecute(String params) {  
-	            // くるくるを消去  
-	            dialog.dismiss();  
-	            final Calendar calendar = Calendar.getInstance();
-	            final int hour = calendar.get(Calendar.HOUR_OF_DAY);
-	            final int minute = calendar.get(Calendar.MINUTE);
-	            final int second = calendar.get(Calendar.SECOND);
-	            
+        public void onPostExecute(String params) {  
+            // くるくるを消去  
+            dialog.dismiss();  
+            final Calendar calendar = Calendar.getInstance();
+            final int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            final int minute = calendar.get(Calendar.MINUTE);
+            final int second = calendar.get(Calendar.SECOND);
+            
 
-	            
-	            if (params == null){
-	            	messageText.setText("下記のボタンから設定をしてください");
-	            	return;
-	            }
-	            params = params.trim();//なぜか最初にスペースが入っているため
-	            if(params.equals("send")){
-	            	messageText.setText("メールが送信されました(" + hour + "時" + minute + "分" + second + "秒)");
-	            }
-	            else if(params.equals("not send")){
-	            	messageText.setText("メールが送れませんでした。下記のボタンから設定を見直すと送れる可能性があります");
-	            }
-	            else{
-	            	messageText.setText("サーバー調整中です。下記のボタンからメールで送って下さい");
-	            }
-	            
-	            
-	        }  
-		/**
-		 * メールを送る処理
-		 * @param url
-		 * @return httpgetの結果
-		 */
-	    public String doGet( String url ){
-	    	try{
-	    		HttpGet method = new HttpGet( url );
-	    		DefaultHttpClient client = new DefaultHttpClient();
-	    		// ヘッダを設定する
-	    		method.setHeader( "Connection", "Keep-Alive" );
-	        
-	    		HttpResponse response = client.execute( method );
-	    		int status = response.getStatusLine().getStatusCode();
-	    		if ( status != HttpStatus.SC_OK )
-	    			throw new Exception( "" );
-	        
-	    		return EntityUtils.toString( response.getEntity(), "UTF-8" );
-	    	}
-	    	catch ( Exception e )
-	    	{
-	    		return null;
-	    	}
-	    }
+            
+            if (params == null){
+            	messageText.setText("下記のボタンから設定をしてください");
+            	return;
+            }
+            params = params.trim();//なぜか最初にスペースが入っているため
+            if(params.equals("send")){
+            	messageText.setText("メールが送信されました(" + hour + "時" + minute + "分" + second + "秒)");
+            }
+            else if(params.equals("not send")){
+            	messageText.setText("メールが送れませんでした。下記のボタンから設定を見直すと送れる可能性があります");
+            }
+            else{
+            	messageText.setText("サーバー調整中です。下記のボタンからメールで送って下さい");
+            }
+            
+            
+        }  
+
 	    
 	    public String doPost(byte[] urlStr, byte[] requestBytes)
 	    {
@@ -400,23 +345,18 @@ public class MainActivity extends Activity {
 	    	  String result = "";
 	    	  try {
 		    	   // URL指定
-		    	   URL url = new URL(new String(urlStr, "UTF-8"));
-		    	 
+		    	   URL url = new URL(new String(urlStr, request_encoding));
 		    	   // HttpURLConnectionインスタンス作成
 		    	   http = (HttpURLConnection)url.openConnection();
-		    	 
 		    	   // POST設定
 		    	   http.setRequestMethod("POST");
-		    	 
 		    	   // HTTPヘッダの「Content-Type」を「application/octet-stream」に設定
 		    	   http.setRequestProperty("Content-Type","application/octet-stream");
-		    	 
 		    	   // URL 接続を使用して入出力を行う
 		    	   http.setDoInput(true);
 		    	   http.setDoOutput(true);
 		    	   // キャッシュは使用しない
 		    	   http.setUseCaches(false);
-		    	  
 		    	   // 接続
 		    	   http.connect();
 		    	   // データを出力
@@ -449,10 +389,8 @@ public class MainActivity extends Activity {
 	    	   } catch(Exception e) {
 	    	   }
 	    	  }
-	    
 	    	  return result;
 	    }
-	
 	}
 	    
 	
