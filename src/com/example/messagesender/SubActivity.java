@@ -2,6 +2,7 @@ package com.example.messagesender;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -13,6 +14,17 @@ import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
 public class SubActivity extends Activity {
+	
+	String senderName;
+	String recieverAddress;
+	String title;
+	String message;
+	
+	EditText editTextSenderName;
+	EditText editTextRecieverAddress;
+	EditText editTextTitle;
+	EditText editTextMessage;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,6 +39,23 @@ public class SubActivity extends Activity {
 				saveButtonClick();
 			}
 		});
+		
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		senderName		= sp.getString("senderName", "");
+		recieverAddress	= sp.getString("recieverAdress", "");
+		title			= sp.getString("title", "今から帰ります");
+		message			= sp.getString("message", "今会社を出ました");
+		
+		editTextSenderName = (EditText)findViewById(R.id.editSenderName);
+		editTextRecieverAddress = (EditText)findViewById(R.id.editRecieverAdress);
+		editTextTitle = (EditText)findViewById(R.id.editTitle);
+		editTextMessage = (EditText)findViewById(R.id.editMessage);
+		
+		editTextSenderName.setText(senderName);
+		editTextRecieverAddress.setText(recieverAddress);
+		editTextTitle.setText(title);
+		editTextMessage.setText(message);
 		
 		//テストボタン
 		/*
@@ -44,19 +73,40 @@ public class SubActivity extends Activity {
 	
 	//登録ボタン
 	private void saveButtonClick(){
-		EditText editText = (EditText)findViewById(R.id.editSenderName);
+
+		//各テキストボックスの値を読み込む
+
+		senderName = editTextSenderName.getText().toString();
+		recieverAddress = editTextRecieverAddress.getText().toString();
+		title = editTextTitle.getText().toString();
+		message = editTextMessage.getText().toString();
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 		Editor e = sp.edit();
-		e.putString("senderName", editText.getText().toString()).commit();
 		
-		editText = (EditText)findViewById(R.id.editRecieverAdress);
-		e.putString("recieverAdress", editText.getText().toString()).commit();
+		//空白でなければ保存
+		if(!senderName.equals("")){
+			senderName.replace("&", "and");//&はandに置換
+			e.putString("senderName", senderName).commit();
+		}
 		
-		editText = (EditText)findViewById(R.id.editTitle);
-		e.putString("title", editText.getText().toString()).commit();
+		if(!recieverAddress.equals("")){
+			senderName.replace("&", "and");
+			e.putString("recieverAdress", recieverAddress).commit();
+		}
+				
+		if(!title.equals("")){
+			senderName.replace("&", "and");
+			e.putString("title", title).commit();
+		}
 		
-		editText = (EditText)findViewById(R.id.editMessage);
-		e.putString("message", editText.getText().toString()).commit();
+		if(!message.equals("")){
+			senderName.replace("&", "and");
+			e.putString("message", message).commit();
+		}			
+		
+		//設定完了したらintentでメール画面に繊維
+		Intent intent = new Intent(SubActivity.this,MainActivity.class);
+		startActivity(intent);
 		
 	}
 	
