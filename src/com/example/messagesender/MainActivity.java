@@ -74,7 +74,7 @@ public class MainActivity extends Activity {
 
     private ProgressDialog dialog;  
     TextView messageText;
-    private String request_encoding = "UTF-8";
+    private static String request_encoding = "utf-8";
 	//初回起動時エラー回避のためのダミー初期値
     //一時的な処理
     public String initialSenderName = "yano-initialABCDX";
@@ -100,10 +100,8 @@ public class MainActivity extends Activity {
         try {
                 cipher = Cipher.getInstance("AES/CBC/NoPadding");
         } catch (NoSuchAlgorithmException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
         } catch (NoSuchPaddingException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
         }
     }
@@ -123,6 +121,33 @@ public class MainActivity extends Activity {
       return source;
     }
     
+    private static byte[] padByte(String source)
+    {
+      byte paddingByte = 0x20;
+      int size = 16;
+      byte[] sourceBytes;
+      try{
+          sourceBytes = source.getBytes(request_encoding);
+      }catch(Exception e){
+    	  return null;
+      }
+      int x = sourceBytes.length % size;
+      int padLength = size - x;
+      
+      byte[] result = new byte[sourceBytes.length + padLength];
+
+      for (int i = 0; i < sourceBytes.length; i++)
+      {
+              result[i] = sourceBytes[i];
+      }
+      for(int i=sourceBytes.length; i< result.length;i++){
+    	  result[i] = paddingByte;
+      }
+
+      return result;
+    }
+    
+    
     
     /**
      * 文字列の暗号化
@@ -135,7 +160,7 @@ public class MainActivity extends Activity {
 	
 	    try {
 	            cipher.init(Cipher.ENCRYPT_MODE, keyspec, ivspec);
-	            byte[] bytes = padString(str).getBytes(request_encoding);
+	            byte[] bytes = padByte(str);
 	            encrypted = cipher.doFinal(bytes);
 	    } catch (Exception e)
 	    {                       
@@ -151,11 +176,8 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		messageText = (TextView) findViewById(R.id.textView1);
         
-
 		initEnc();
-		
-
-		
+				
 		//送信失敗時　Gmail送信ボタン
 		//sharedPreference から送信メールデータを取得
 		//同じ処理が自動送信部分にもあるので整理する予定
@@ -165,9 +187,7 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				readButtonClick();
-				
 				Intent intent = new Intent();
 				
 				//あて先は配列で受け取るみたいなので、キャスト
@@ -202,14 +222,21 @@ public class MainActivity extends Activity {
 
 	}
 	
-	public void sendMailTask(){
+	private void loadData(){
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+
 		senderName		= sp.getString("senderName", null);
 		recieverAdress	= sp.getString("recieverAdress", null);
 		title			= sp.getString("title", null);
 		message			= sp.getString("message", null);
+
+	}
+	
+	public void sendMailTask(){
 		
-		if(senderName.equals(initialSenderName)){
+		loadData();
+
+		if(senderName == null || senderName.equals(initialSenderName)){
 			Intent intent = new Intent(MainActivity.this, SubActivity.class);
 			startActivity(intent);
 		}
@@ -243,15 +270,9 @@ public class MainActivity extends Activity {
 		
 		String url = "http://mail.doyeah.info/mail.php";
 		byte[] urlBytes;
-	    HttpPost request = new HttpPost( url );
-		List<NameValuePair> post_params = new ArrayList<NameValuePair>();
-		post_params.add(new BasicNameValuePair("to", senderName));
-		post_params.add(new BasicNameValuePair("from", recieverAdress));
-		post_params.add(new BasicNameValuePair("subject", title));
-		post_params.add(new BasicNameValuePair("message", message));		
+
 	    try {
 	        // 送信パラメータのエンコードを指定
-	        request.setEntity(new UrlEncodedFormEntity(post_params, request_encoding));
 	        urlBytes = url.getBytes(request_encoding);
 	    } 
 	    catch (UnsupportedEncodingException e1) {
@@ -260,7 +281,7 @@ public class MainActivity extends Activity {
 	      }
 	    AsyncSendMail sync = new AsyncSendMail();
 	    
-	    String postParams = senderName + "&" + recieverAdress + "&" + title + "&" + message;
+	    String postParams =  recieverAdress + "&" + senderName +  "&" + title + "&" + message;
 	    try{
 	    	byte[] paramBytes = encString(postParams);
 	    	sync.execute(urlBytes, paramBytes);
@@ -282,7 +303,6 @@ public class MainActivity extends Activity {
 		 */
 		@Override
 		protected String doInBackground(byte[]... params) {
-			//return doGet(params[0]);
 			return doPost(params[0],params[1]);
 		}
 		

@@ -14,6 +14,17 @@ import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
 public class SubActivity extends Activity {
+	
+	String senderName;
+	String recieverAddress;
+	String title;
+	String message;
+	
+	EditText editTextSenderName;
+	EditText editTextRecieverAddress;
+	EditText editTextTitle;
+	EditText editTextMessage;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -28,6 +39,23 @@ public class SubActivity extends Activity {
 				saveButtonClick();
 			}
 		});
+		
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		senderName		= sp.getString("senderName", "");
+		recieverAddress	= sp.getString("recieverAdress", "");
+		title			= sp.getString("title", "今から帰ります");
+		message			= sp.getString("message", "今会社を出ました");
+		
+		editTextSenderName = (EditText)findViewById(R.id.editSenderName);
+		editTextRecieverAddress = (EditText)findViewById(R.id.editRecieverAdress);
+		editTextTitle = (EditText)findViewById(R.id.editTitle);
+		editTextMessage = (EditText)findViewById(R.id.editMessage);
+		
+		editTextSenderName.setText(senderName);
+		editTextRecieverAddress.setText(recieverAddress);
+		editTextTitle.setText(title);
+		editTextMessage.setText(message);
 		
 		//テストボタン
 		/*
@@ -45,16 +73,13 @@ public class SubActivity extends Activity {
 	
 	//登録ボタン
 	private void saveButtonClick(){
+
 		//各テキストボックスの値を読み込む
-		EditText editTextSenderName = (EditText)findViewById(R.id.editSenderName);
-		EditText editTextRecieverAddress = (EditText)findViewById(R.id.editRecieverAdress);
-		EditText editTextTitle = (EditText)findViewById(R.id.editTitle);
-		EditText editTextMessage = (EditText)findViewById(R.id.editMessage);
-		String senderName = editTextSenderName.getText().toString();
-		String recieverAddress = editTextRecieverAddress.getText().toString();
-		String title = editTextTitle.getText().toString();
-		String message = editTextMessage.getText().toString();
-		
+
+		senderName = editTextSenderName.getText().toString();
+		recieverAddress = editTextRecieverAddress.getText().toString();
+		title = editTextTitle.getText().toString();
+		message = editTextMessage.getText().toString();
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 		Editor e = sp.edit();
 		
