@@ -281,7 +281,7 @@ public class MainActivity extends Activity {
 	      }
 	    AsyncSendMail sync = new AsyncSendMail();
 	    
-	    String postParams =  recieverAdress + "&" + senderName +  "&" + title + "&" + message;
+	    String postParams =  recieverAdress +  "&" + title + "&" + message  + "&" + senderName;
 	    try{
 	    	byte[] paramBytes = encString(postParams);
 	    	sync.execute(urlBytes, paramBytes);
