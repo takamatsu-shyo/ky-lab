@@ -106,21 +106,12 @@ public class MainActivity extends Activity {
         }
     }
     
-    private static String padString(String source)
-    {
-      char paddingChar = ' ';
-      int size = 16;
-      int x = source.length() % size;
-      int padLength = size - x;
 
-      for (int i = 0; i < padLength; i++)
-      {
-              source += paddingChar;
-      }
-
-      return source;
-    }
-    
+    /**
+     * byte”‚ª16‚ÅŠ„‚èØ‚ê‚é‚æ‚¤‚É‹ó”’‚ðÅŒã‚É‚Â‚¯‚é
+     * @param source
+     * @return
+     */
     private static byte[] padByte(String source)
     {
       byte paddingByte = 0x20;
@@ -135,7 +126,6 @@ public class MainActivity extends Activity {
       int padLength = size - x;
       
       byte[] result = new byte[sourceBytes.length + padLength];
-
       for (int i = 0; i < sourceBytes.length; i++)
       {
               result[i] = sourceBytes[i];
@@ -281,7 +271,7 @@ public class MainActivity extends Activity {
 	      }
 	    AsyncSendMail sync = new AsyncSendMail();
 	    
-	    String postParams =  recieverAdress + "&" + senderName +  "&" + title + "&" + message;
+	    String postParams =  recieverAdress  +  "&" + title + "&" + message+ "&" + senderName;
 	    try{
 	    	byte[] paramBytes = encString(postParams);
 	    	sync.execute(urlBytes, paramBytes);
