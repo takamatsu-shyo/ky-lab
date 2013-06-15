@@ -1,16 +1,27 @@
 package com.example.messagesender;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.BufferType;
 
 public class SubActivity extends Activity {
@@ -24,6 +35,7 @@ public class SubActivity extends Activity {
 	EditText editTextRecieverAddress;
 	EditText editTextTitle;
 	EditText editTextMessage;
+	private static final int    PICK_CONTACT = 1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +51,20 @@ public class SubActivity extends Activity {
 				saveButtonClick();
 			}
 		});
+		
+		//登録ボタン
+		Button bnImport = (Button)findViewById(R.id.bnImportAddress);
+		bnImport.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent pickIntent = new Intent(Intent.ACTION_PICK,
+						ContactsContract.Contacts.CONTENT_URI);
+						//People.Contacts.CONTENT_URI);
+				startActivityForResult(pickIntent, SubActivity.PICK_CONTACT);
+			}
+		});
+		
+		
 		
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 		
@@ -70,6 +96,80 @@ public class SubActivity extends Activity {
 		*/
 	}
 	
+	@Override
+	public void onActivityResult(int reqCode, int resultCode, Intent data){
+
+		if (data == null){//連絡先を選択しなかった場合
+			return;
+		}
+		Uri contactData = data.getData();
+		String id = getIDFromContact(contactData);
+		if(id.equals("")){//idが取得できないときはそのまま終了
+			return;
+		}
+		LinkedList<String> mailList = getMailAddresses(id);
+		final String[] strAddresses = (String[])mailList.toArray(new String[0]);
+		if(strAddresses.length == 0){//アドレスの中身が無い時は書き換えず終了
+			Toast.makeText(SubActivity.this, "この連絡先には有効なアドレスがありません", Toast.LENGTH_LONG).show();
+			return;
+		}
+		else if(strAddresses.length == 1){//アドレスが１つだけの時はそのアドレスに書き換える
+			editTextRecieverAddress.setText(strAddresses[0]);
+			return;
+		}
+		else{//２つ以上の時はダイアログを出す
+			new AlertDialog.Builder(SubActivity.this)
+		    .setTitle("送りたいメールアドレスを選んでください")
+		    .setItems(strAddresses, new DialogInterface.OnClickListener(){
+		        public void onClick(DialogInterface dialog, int which) {
+					editTextRecieverAddress.setText(strAddresses[which]);
+		        }
+		    }
+		    ).show();
+	    }
+
+	}
+	
+	/**
+	 * 連絡先のUriからidを取得する（できないときは""を返す）
+	 */
+	private String getIDFromContact(Uri contactData){
+		ContentResolver contentResolver = this.getContentResolver();
+		Cursor cursor = contentResolver.query(contactData, null, null, null, null);
+		cursor.moveToFirst();
+		int columnIndex = cursor
+				.getColumnIndex(ContactsContract.CommonDataKinds.Identity._ID);
+		if(columnIndex < 0){
+			cursor.close();
+			return "";
+		}
+		String id = cursor.getString(columnIndex);
+		cursor.close();
+		return id;
+	}
+	
+	/**
+	 * 連絡先のidからアドレスリストを取得する
+	 * @param id
+	 * @return アドレスのリスト
+	 */
+	private LinkedList<String> getMailAddresses(String id){
+		LinkedList<String> list = new LinkedList<String>();
+        ContentResolver cr = this.getContentResolver();
+        Cursor emails = cr.query(Email.CONTENT_URI, null,  Email.CONTACT_ID + " = " + id, null, null);
+        emails.moveToFirst();
+        do{
+	        int index = emails.getColumnIndex(Email.DATA);
+	        try{
+		        String address = emails.getString(index);
+		        list.add(address);
+	        }catch(Exception e){
+	        	break;
+	        }
+        }while(emails.moveToNext());
+        emails.close();
+        return list;
+	}
 	
 	//登録ボタン
 	private void saveButtonClick(){
@@ -90,17 +190,17 @@ public class SubActivity extends Activity {
 		}
 		
 		if(!recieverAddress.equals("")){
-			senderName.replace("&", "and");
+			recieverAddress.replace("&", "and");
 			e.putString("recieverAdress", recieverAddress).commit();
 		}
 				
 		if(!title.equals("")){
-			senderName.replace("&", "and");
+			title.replace("&", "and");
 			e.putString("title", title).commit();
 		}
 		
 		if(!message.equals("")){
-			senderName.replace("&", "and");
+			message.replace("&", "and");
 			e.putString("message", message).commit();
 		}			
 		

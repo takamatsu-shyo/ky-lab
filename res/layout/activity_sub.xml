@@ -6,6 +6,10 @@
     android:stretchColumns="1"
     android:orientation="vertical" >
 
+    
+    
+<TableRow android:gravity="top" >
+    
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
@@ -13,6 +17,35 @@
         android:layout_gravity="left"
         android:layout_margin="5dp"
         android:text="設定画面 " />
+    
+       <Button
+        android:id="@+id/bnImportAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="連絡帳からアドレスを取得" />
+</TableRow>
+
+       
+<TableRow android:gravity="top" >
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.03"
+        android:text="相手のメールアドレス"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/editRecieverAdress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/recieverAdress_default"
+        android:inputType="textEmailAddress" />
+    
+ 
+</TableRow>
 
 <TableRow android:gravity="top" >
 
@@ -32,24 +65,6 @@
         android:hint="@string/senderName_default" />
 </TableRow>
 
-<TableRow android:gravity="top" >
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.03"
-        android:text="相手のメールアドレス"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="12sp" />
-
-    <EditText
-        android:id="@+id/editRecieverAdress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/recieverAdress_default"
-        android:inputType="textEmailAddress" />
-</TableRow>
 
 <TableRow android:gravity="top" >
     <TextView
@@ -68,6 +83,7 @@
 </TableRow>
 
 <TableRow android:gravity="top" >
+  
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -83,10 +99,14 @@
         android:layout_height="wrap_content"
         android:hint="@string/message_default" />
 </TableRow>
+
+
     <Button
         android:id="@+id/btnRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="登録" />
+
+
 
 </TableLayout>
