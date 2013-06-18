@@ -46,6 +46,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
+import android.R.layout;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -58,9 +59,12 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 import android.widget.Toast;
+
+import com.google.ads.*;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -91,6 +95,8 @@ public class MainActivity extends Activity {
     
     private String SecretKey = "0123456789abcdef";//Dummy secretKey (CHANGE IT!)
 	
+    private AdView adView;
+    
     /**
      * 暗号化プログラムの初期化
      */
@@ -166,12 +172,29 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		messageText = (TextView) findViewById(R.id.textView1);
         
+		///ad part
+		AdView adView = (AdView)this.findViewById(R.id.adView);
+		AdRequest adRequest = new AdRequest();
+		adView.loadAd(adRequest);
+		
+		 // Create the adView
+	    //adView = new AdView(this, AdSize.BANNER, "a151bf0804e8aa1");
+
+	    // Lookup your LinearLayout assuming it's been given
+	    // the attribute android:id="@+id/mainLayout"
+	    //LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
+
+	    // Add the adView to it
+	    //layout.addView(adView);
+
+	    // Initiate a generic request to load it with an ad
+	    //adView.loadAd(new AdRequest());
+
 		initEnc();
 				
 		//送信失敗時　Gmail送信ボタン
 		//sharedPreference から送信メールデータを取得
-		//同じ処理が自動送信部分にもあるので整理する予定
-		
+		//同じ処理が自動送信部分にもあるので整理する予定	
 		Button btnGmail = (Button)findViewById(R.id.btnGmail);
 		btnGmail.setOnClickListener(new View.OnClickListener() {
 			
@@ -412,5 +435,6 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
 
 }
