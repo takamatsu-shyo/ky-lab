@@ -177,18 +177,6 @@ public class MainActivity extends Activity {
 		AdRequest adRequest = new AdRequest();
 		adView.loadAd(adRequest);
 		
-		 // Create the adView
-	    //adView = new AdView(this, AdSize.BANNER, "a151bf0804e8aa1");
-
-	    // Lookup your LinearLayout assuming it's been given
-	    // the attribute android:id="@+id/mainLayout"
-	    //LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
-
-	    // Add the adView to it
-	    //layout.addView(adView);
-
-	    // Initiate a generic request to load it with an ad
-	    //adView.loadAd(new AdRequest());
 
 		initEnc();
 				
@@ -221,6 +209,10 @@ public class MainActivity extends Activity {
 		});
 		
 		
+		
+		//this.moveTaskToBack(true); 
+		
+		
 		//èâä˙ê›íË/ê›íËïœçXÉ{É^Éì
 		Button btnSetting = (Button)findViewById(R.id.btnSetting);
 		btnSetting.setOnClickListener(new View.OnClickListener(){
@@ -228,6 +220,16 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent(MainActivity.this, SubActivity.class);
 				startActivity(intent);
+			}
+		});
+		
+		
+		//ï¬Ç∂ÇÈ
+		Button btnClose = (Button)findViewById(R.id.btnClose);
+		btnClose.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				finish();
 			}
 		});
 		
