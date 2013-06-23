@@ -177,9 +177,9 @@ public class MainActivity extends Activity {
 		messageText = (TextView) findViewById(R.id.textView1);
         
 		///ad part
-		AdView adView = (AdView)this.findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest();
-		adView.loadAd(adRequest);
+		//AdView adView = (AdView)this.findViewById(R.id.adView);
+		//AdRequest adRequest = new AdRequest();
+		//adView.loadAd(adRequest);
 		
 
 		initEnc();
