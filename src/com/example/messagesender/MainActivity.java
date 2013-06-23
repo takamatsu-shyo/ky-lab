@@ -207,7 +207,7 @@ public class MainActivity extends Activity {
 				try{
 				startActivity(intent);
 				}catch(Exception e){
-					Toast.makeText(MainActivity.this, "g-mailアプリを開けません。アプリがインストールされていない可能性があります", Toast.LENGTH_LONG).show();
+					Toast.makeText(MainActivity.this, "Gmailアプリを開けません。アプリがインストールされていない可能性があります", Toast.LENGTH_LONG).show();
 				}
 			}
 		});
@@ -434,13 +434,14 @@ public class MainActivity extends Activity {
 		alertDialog.show();
 	}
 
-	
+	/*
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	*/
 	
 
 }
