@@ -58,6 +58,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -169,26 +170,17 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		//requestWindowFeature(Window.FEATURE_NO_TITLE); //タイトルバー消去
+
 		setContentView(R.layout.activity_main);
 		messageText = (TextView) findViewById(R.id.textView1);
         
 		///ad part
-		AdView adView = (AdView)this.findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest();
-		adView.loadAd(adRequest);
+		//AdView adView = (AdView)this.findViewById(R.id.adView);
+		//AdRequest adRequest = new AdRequest();
+		//adView.loadAd(adRequest);
 		
-		 // Create the adView
-	    //adView = new AdView(this, AdSize.BANNER, "a151bf0804e8aa1");
-
-	    // Lookup your LinearLayout assuming it's been given
-	    // the attribute android:id="@+id/mainLayout"
-	    //LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
-
-	    // Add the adView to it
-	    //layout.addView(adView);
-
-	    // Initiate a generic request to load it with an ad
-	    //adView.loadAd(new AdRequest());
 
 		initEnc();
 				
@@ -215,10 +207,14 @@ public class MainActivity extends Activity {
 				try{
 				startActivity(intent);
 				}catch(Exception e){
-					Toast.makeText(MainActivity.this, "g-mailアプリを開けません。アプリがインストールされていない可能性があります", Toast.LENGTH_LONG).show();
+					Toast.makeText(MainActivity.this, "Gmailアプリを開けません。アプリがインストールされていない可能性があります", Toast.LENGTH_LONG).show();
 				}
 			}
 		});
+		
+		
+		
+		//this.moveTaskToBack(true); 
 		
 		
 		//初期設定/設定変更ボタン
@@ -228,6 +224,16 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent(MainActivity.this, SubActivity.class);
 				startActivity(intent);
+			}
+		});
+		
+		
+		//閉じる
+		Button btnClose = (Button)findViewById(R.id.btnClose);
+		btnClose.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				finish();
 			}
 		});
 		
@@ -428,13 +434,14 @@ public class MainActivity extends Activity {
 		alertDialog.show();
 	}
 
-	
+	/*
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	*/
 	
 
 }

@@ -1,36 +1,94 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
-              android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent">
+    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-        <TextView
-        android:id="@+id/textView1"
+    <!--
+    <com.google.ads.AdView
+        android:id="@+id/adView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="..." />
+        ads:adSize="BANNER"
+        ads:adUnitId="MY_AD_UNIT_ID"
+        ads:loadAdOnCreate="true"
+        ads:testDevices="TEST_EMULATOR, TEST_DEVICE_ID" >
+    </com.google.ads.AdView>
+    -->
 
-    <Button
-        android:id="@+id/btnSetting"
+    <net.nend.android.NendAdView
+        android:id="@+id/nend"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="33dp"
-        android:text="初期設定 / 設定変更" />
+        android:layout_height="50dp"
+        NendApiKey="620a93e5f6aa06d08f872bdbb67d655aec5e8432"
+        NendSpotId="64729" />
 
-    <Button
-        android:id="@+id/btnGmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gmailで送る" />
-    
-    
-    <com.google.ads.AdView android:id="@+id/adView"
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         ads:adUnitId="MY_AD_UNIT_ID"
-                         ads:adSize="BANNER"
-                         ads:testDevices="TEST_EMULATOR, TEST_DEVICE_ID"
-                         ads:loadAdOnCreate="true"/>
+    <FrameLayout
+        android:id="@+id/frameLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" 
+        android:background="#ffffff">
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/kaeruimage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:paddingTop="50dp"
+                android:src="@drawable/kaeru_mainview_150" />
+
+            <Button
+                android:id="@+id/btnSetting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginTop="12dp"
+                android:text="初期設定 / 設定変更" />
+
+            <Button
+                android:id="@+id/btnGmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginTop="6dp"
+                android:text="Gmailで送る" />
+
+            <Button
+                android:id="@+id/btnClose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginTop="6dp"
+                android:text="閉じる" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="top"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="20dp"
+                android:textColor="#222222"
+                android:text="送信結果..." />
+        </LinearLayout>
+
+    </FrameLayout>
+
 </LinearLayout>
-
-
