@@ -62,23 +62,24 @@ public class SubActivity extends Activity {
 			}
 		});
 
-		/* Get UserProfile 
+		/* Get UserProfile */
 		// Cursorの取得
-		Cursor mCursor = getContentResolver().query(
-				ContactsContract.Profile.CONTENT_URI, null, null, null, null);
+		Cursor mCursor = getContentResolver().query(ContactsContract.Profile.CONTENT_URI, null, null, null, null);
 		mCursor.moveToFirst();
 
 		// UserNameの取得
+		String uName = "";
 		int nameIndex = mCursor.getColumnIndex(ContactsContract.Profile.DISPLAY_NAME);
-		String uName = mCursor.getString(nameIndex);
-
+		if(nameIndex != -1){//アドレスの中身が無い時は書き換えず終了
+			uName = mCursor.getString(nameIndex);
+		}
 		// ProfileのURLから取得したCursorを閉じる
 		mCursor.close();
-		 */
+		 
 
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-		senderName		= sp.getString("senderName", "");
+		senderName		= sp.getString("senderName", uName);
 		recieverAddress	= sp.getString("recieverAdress", "");
 		title			= sp.getString("title", "今から帰ります");
 		message			= sp.getString("message", "今会社を出ました");
