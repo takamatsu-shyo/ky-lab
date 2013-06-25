@@ -1,111 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="10dp"
-    android:orientation="vertical"
-    android:stretchColumns="1" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:orientation="vertical" >
 
-    <TableRow android:gravity="top" >
+    <!--
+    <net.nend.android.NendAdView
+        android:id="@+id/nend"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        NendApiKey="620a93e5f6aa06d08f872bdbb67d655aec5e8432"
+        NendSpotId="64729" />
+    -->
 
-        <!--
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_margin="5dp"
-            android:text="設定画面 " />
-        -->
+    <TextView
+        android:id="@+id/textView_recieverAdress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/recieverAdress_explain"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/bnImportAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="連絡帳からアドレスを取得" />
-    </TableRow>
-
-    <TableRow android:gravity="top" >
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.03"
-            android:text="相手のメールアドレス"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:layout_marginBottom="10dp"
+            android:text="@string/btn_getAdress"
             android:textSize="12sp" />
 
         <EditText
             android:id="@+id/editRecieverAdress"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:hint="@string/recieverAdress_default"
             android:inputType="textEmailAddress" />
-    </TableRow>
+    </LinearLayout>
 
-    <TableRow android:gravity="top" >
+    <TextView
+        android:id="@+id/TextView_senderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/senderName_explain"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/TextView01"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.03"
-            android:text="あなたのお名前"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="12sp" />
+    <EditText
+        android:id="@+id/editSenderName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:hint="@string/senderName_default" />
 
-        <EditText
-            android:id="@+id/editSenderName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/senderName_default" />
-    </TableRow>
+    <TextView
+        android:id="@+id/textView_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_explain"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp" />
 
-    <TableRow android:gravity="top" >
+    <EditText
+        android:id="@+id/editTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:hint="@string/title_default" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.03"
-            android:text="件名"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="12sp" />
+    <TextView
+        android:id="@+id/textView_messsage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/message_explain"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp" />
 
-        <EditText
-            android:id="@+id/editTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/title_default" />
-    </TableRow>
+    <EditText
+        android:id="@+id/editMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:hint="@string/message_default" />
 
-    <TableRow android:gravity="top" >
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_register" />
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.03"
-            android:text="メール本文"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="12sp" />
-
-        <EditText
-            android:id="@+id/editMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/message_default" 
-            android:layout_marginBottom="10dp"/>
-    </TableRow>
-
-    <TableRow android:gravity="right" >
-
-        <Button
-            android:id="@+id/btnRegister"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:text="登録" />
-    </TableRow>
-
-</TableLayout>
+</LinearLayout>
