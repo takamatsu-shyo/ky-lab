@@ -191,7 +191,9 @@ public class MainActivity extends Activity {
 		btnClose.setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v) {
-				finish();
+				//finish();
+				//moveTaskToBack(true);
+				android.os.Process.killProcess(android.os.Process.myPid());
 			}
 		});
 

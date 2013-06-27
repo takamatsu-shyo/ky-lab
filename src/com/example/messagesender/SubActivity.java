@@ -2,6 +2,7 @@ package com.example.messagesender;
 
 import java.util.LinkedList;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -11,9 +12,10 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.view.View;
@@ -34,6 +36,7 @@ public class SubActivity extends Activity {
 	EditText editTextMessage;
 	private static final int    PICK_CONTACT = 1;
 
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,9 +73,15 @@ public class SubActivity extends Activity {
 		// UserNameの取得
 		String uName = "";
 		int nameIndex = mCursor.getColumnIndex(ContactsContract.Profile.DISPLAY_NAME);
-		if(nameIndex != -1){//アドレスの中身が無い時は書き換えず終了
+		mCursor.moveToFirst();
+		//if(nameIndex != -1){//アドレスの中身が無い時は書き換えず終了
+		try{
 			uName = mCursor.getString(nameIndex);
 		}
+		catch(Exception e) {
+			e.printStackTrace();
+		} 
+
 		// ProfileのURLから取得したCursorを閉じる
 		mCursor.close();
 		 
@@ -108,7 +117,7 @@ public class SubActivity extends Activity {
 			return;
 		}
 		LinkedList<String> mailList = getMailAddresses(id);
-		final String[] strAddresses = (String[])mailList.toArray(new String[0]);
+		final String[] strAddresses = mailList.toArray(new String[0]);
 		if(strAddresses.length == 0){//アドレスの中身が無い時は書き換えず終了
 			Toast.makeText(SubActivity.this, "この連絡先には有効なアドレスがありません", Toast.LENGTH_LONG).show();
 			return;
@@ -121,6 +130,7 @@ public class SubActivity extends Activity {
 			new AlertDialog.Builder(SubActivity.this)
 			.setTitle("送りたいメールアドレスを選んでください")
 			.setItems(strAddresses, new DialogInterface.OnClickListener(){
+				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					editTextRecieverAddress.setText(strAddresses[which]);
 				}
@@ -138,7 +148,7 @@ public class SubActivity extends Activity {
 		Cursor cursor = contentResolver.query(contactData, null, null, null, null);
 		cursor.moveToFirst();
 		int columnIndex = cursor
-				.getColumnIndex(ContactsContract.CommonDataKinds.Identity._ID);
+				.getColumnIndex(BaseColumns._ID);
 		if(columnIndex < 0){
 			cursor.close();
 			return "";

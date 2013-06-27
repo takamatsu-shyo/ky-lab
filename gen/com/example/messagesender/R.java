@@ -28,26 +28,26 @@ public final class R {
         public static final int kaeru_mainview_250=0x7f020004;
     }
     public static final class id {
-        public static final int TextView_senderName=0x7f08000c;
+        public static final int TextView_senderName=0x7f08000d;
         public static final int action_settings=0x7f080013;
         public static final int bnImportAddress=0x7f08000a;
         public static final int btnClose=0x7f080006;
         public static final int btnGmail=0x7f080005;
         public static final int btnRegister=0x7f080012;
         public static final int btnSetting=0x7f080004;
-        public static final int editMessage=0x7f080011;
+        public static final int editMessage=0x7f080010;
         public static final int editRecieverAdress=0x7f08000b;
-        public static final int editSenderName=0x7f08000d;
-        public static final int editTitle=0x7f08000f;
+        public static final int editSenderName=0x7f08000c;
+        public static final int editTitle=0x7f08000e;
         public static final int frameLayout1=0x7f080001;
         public static final int kaeruimage=0x7f080003;
         public static final int linearLayout1=0x7f080002;
         public static final int linearLayout2=0x7f080007;
         public static final int nend=0x7f080000;
         public static final int textView1=0x7f080008;
-        public static final int textView_messsage=0x7f080010;
+        public static final int textView_messsage=0x7f080011;
         public static final int textView_recieverAdress=0x7f080009;
-        public static final int textView_title=0x7f08000e;
+        public static final int textView_title=0x7f08000f;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;

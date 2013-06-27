@@ -44,7 +44,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:hint="@string/recieverAdress_default"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress" 
+            android:nextFocusUp="@+id/editSenderName" />
     </LinearLayout>
 
     <TextView
@@ -60,7 +61,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:hint="@string/senderName_default" />
+        android:hint="@string/senderName_default"
+        android:nextFocusUp="@+id/editTitle"  />
 
     <TextView
         android:id="@+id/textView_title"
@@ -75,7 +77,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:hint="@string/title_default" />
+        android:hint="@string/title_default"
+        android:nextFocusUp="@+id/editMessage"  />
 
     <TextView
         android:id="@+id/textView_messsage"
@@ -90,7 +93,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:hint="@string/message_default" />
+        android:hint="@string/message_default"
+        android:imeOptions="actionDone"
+        android:singleLine="true"  />
 
     <Button
         android:id="@+id/btnRegister"
